@@ -1,7 +1,7 @@
 package main.task;
 
-import common.AbstractTask;
-import common.FutureResult;
+import entity.AbstractTask;
+import entity.FutureResult;
 
 public class MovieFansInfoServiceTask extends AbstractTask<FutureResult, Integer> {
     public MovieFansInfoServiceTask(Integer param) {
@@ -10,6 +10,6 @@ public class MovieFansInfoServiceTask extends AbstractTask<FutureResult, Integer
 
     @Override
     protected void handle(Integer param) throws Exception {
-        System.out.println(param);
+        Thread.sleep(1000);
     }
 }

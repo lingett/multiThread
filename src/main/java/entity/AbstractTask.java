@@ -1,4 +1,6 @@
-package common;
+package entity;
+
+import entity.FutureResult;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

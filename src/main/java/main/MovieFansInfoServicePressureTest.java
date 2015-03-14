@@ -1,12 +1,13 @@
 package main;
 
 import common.AbstractPressureTest;
-import common.FutureResult;
+import common.BlockingQueueCallable;
+import common.MultiBlockingQueueCallable;
+import common.PressureTest;
+import entity.FutureResult;
 import main.task.MovieFansInfoServiceTask;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.Callable;
+import java.util.concurrent.*;
 
 public class MovieFansInfoServicePressureTest extends AbstractPressureTest<FutureResult> {
     public MovieFansInfoServicePressureTest(int poolSize, int cycleTimes) {
@@ -14,18 +15,22 @@ public class MovieFansInfoServicePressureTest extends AbstractPressureTest<Futur
     }
 
     @Override
-    protected Collection<Callable<FutureResult>> getTasks() {
-        Collection<Callable<FutureResult>> result = new ArrayList<Callable<FutureResult>>();
-        for (int i = 1; i <= 100; i++) {
-            result.add(new MovieFansInfoServiceTask(i));
+    protected void generateTask(BlockingQueue<Callable<FutureResult>> taskQueue) {
+        for (int i = 1; i <= 20; i++) {
+            try {
+                taskQueue.put(new MovieFansInfoServiceTask(i));
+                getProducedCount().incrementAndGet();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        return result;
     }
 
     public static void main(String... args) {
         int poolSize = 100;
-        int cycleTimes = 1;
-        MovieFansInfoServicePressureTest instance = new MovieFansInfoServicePressureTest(poolSize, cycleTimes);
+        int cycleTimes = 3;
+        PressureTest instance = new MovieFansInfoServicePressureTest(poolSize, cycleTimes);
         instance.execute();
+        System.out.println("end");
     }
 }
