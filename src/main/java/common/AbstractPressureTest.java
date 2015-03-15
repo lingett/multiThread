@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Data
 @NoArgsConstructor
@@ -55,6 +54,12 @@ public abstract class AbstractPressureTest<Result extends FutureResult> implemen
     public void execute() {
         if (!isInit) {
             init();
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         produceTask(taskQueue);
@@ -157,6 +162,7 @@ public abstract class AbstractPressureTest<Result extends FutureResult> implemen
         System.out.println(String.format("测试计划[%s]执行完毕，耗时[%d]ms", getListenerName(), this.resultStatistics.getExecuteTime()));
         System.out.println(String.format("共执行测试用例[%d]个，成功[%d]个，失败[%d]个", resultStatistics.getTotalCount(), resultStatistics.getSuccessCount(), resultStatistics.getErrorCount()));
         System.out.println(String.format("最快执行时间[%d]ms，最慢执行时间[%d]ms", this.resultStatistics.getMinExecuteTime(), this.resultStatistics.getMaxExecuteTime()));
+        System.out.println(String.format("平均执行时间[%d]ms，90线执行时间[%d]ms", this.resultStatistics.getAvgExecuteTime(), this.resultStatistics.getExecuteTimeOf90Line()));
     }
 
     private void shutDownConsumerPool() {

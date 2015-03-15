@@ -18,6 +18,7 @@ public class ResultStatistics {
     private long totalCount;
     private long successCount;
     private long errorCount;
+    private long totalExecuteTime = 0;
 
     private long maxExecuteTime;
     private long minExecuteTime;
@@ -36,6 +37,10 @@ public class ResultStatistics {
         return endTime.getTime() - beginTime.getTime();
     }
 
+    public long getAvgExecuteTime() {
+        return totalExecuteTime / totalCount;
+    }
+
     public synchronized void addResult(FutureResult result) {
         if (result.getExecuteTime() > maxExecuteTime) {
             maxExecuteTime = result.getExecuteTime();
@@ -48,6 +53,7 @@ public class ResultStatistics {
         } else {
             errorCount++;
         }
+        totalExecuteTime += result.getExecuteTime();
         addExecuteTimeListOf10Line(result.getExecuteTime());
     }
 
@@ -61,15 +67,5 @@ public class ResultStatistics {
                 executeTimeOf90Line = executeTime < executeTimeListOf10Line.get(1) ? executeTime : executeTimeListOf10Line.get(1);
             }
         }
-    }
-
-    public static void main(String... args) {
-        ResultStatistics result = new ResultStatistics("a", 10000);
-        for (int i = 1; i < 10000; i++) {
-            FutureResult r = new FutureResult();
-            r.setExecuteTime(i);
-            result.addResult(r);
-        }
-        System.out.println(result.getExecuteTimeOf90Line());
     }
 }
